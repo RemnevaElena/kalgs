@@ -2,6 +2,11 @@
 
 package lesson6
 
+import lesson6.impl.GraphBuilder
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
+
 /**
  * Эйлеров цикл.
  * Средняя
@@ -28,8 +33,40 @@ package lesson6
  * Справка: Эйлеров цикл -- это цикл, проходящий через все рёбра
  * связного графа ровно по одному разу
  */
+//S = O(n) T = O(n) где n - количество вершин в графе
 fun Graph.findEulerLoop(): List<Graph.Edge> {
-    TODO()
+    val result = mutableListOf<Graph.Edge>()
+    var n = 0
+    for (v in this.vertices) {
+        n += this.getNeighbors(v).size % 2
+    }
+    if (n != 0) return result
+    val stack: Stack<Pair<Graph.Vertex, Graph.Edge>> = Stack()
+    stack.push(Pair(this.edges.first().begin, this.edges.first()))
+    val passed = mutableSetOf(stack.peek().second)
+    while (!stack.empty()) {
+        var neighbor = 0
+        var nextEdge = stack.peek().second
+        var nextVertex = stack.peek().first
+        when (stack.peek().first) {
+            stack.peek().second.begin -> nextVertex = stack.peek().second.end
+            stack.peek().second.end -> nextVertex = stack.peek().second.begin
+        }
+        for (t in getConnections(nextVertex).values) {
+            if (!passed.contains(t)) {
+                neighbor++
+                nextEdge = t
+            }
+        }
+        if (neighbor == 0) {
+            result += stack.pop().second
+        } else {
+            stack.push(Pair(nextVertex, nextEdge))
+            passed += nextEdge
+        }
+    }
+    return result
+
 }
 
 /**
@@ -60,8 +97,42 @@ fun Graph.findEulerLoop(): List<Graph.Edge> {
  * |
  * J ------------ K
  */
+//S = O(n) T = O(n) где n - количество вершин в графе
 fun Graph.minimumSpanningTree(): Graph {
-    TODO()
+    val result: MutableList<Graph.Vertex> = ArrayList()
+    val vertices: MutableSet<Graph.Vertex> = this.vertices
+    var neighbors: MutableSet<Graph.Vertex> = HashSet()
+    val graphR = GraphBuilder()
+    var current: Graph.Vertex
+    current = vertices.iterator().next()
+    result.add(current)
+    for (i in 0 until vertices.size - 1) {
+        neighbors.addAll(this.getNeighbors(current))
+        val iterator: Iterator<Graph.Vertex> = neighbors.iterator()
+        while (iterator.hasNext() && result.contains(current)) {
+            current = iterator.next()
+        }
+        if (result.size > 2 && current == result[result.size - 2]) break
+        graphR.addVertex(current.toString())
+        if (!result.isEmpty()) graphR.addConnection(result[result.size - 1], current, 1)
+        result.add(current)
+        neighbors.clear()
+    }
+    neighbors.clear()
+    vertices.removeAll(result)
+    for (vertex in vertices) {
+        neighbors = this.getNeighbors(vertex)
+        for (v in neighbors) {
+
+            if (result.contains(v)) {
+                result.add(vertex)
+                graphR.addVertex(vertex.toString())
+                graphR.addConnection(v, vertex, 1)
+                break
+            }
+        }
+    }
+    return graphR.build()
 }
 
 /**

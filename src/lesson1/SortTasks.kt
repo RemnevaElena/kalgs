@@ -2,6 +2,8 @@
 
 package lesson1
 
+import java.io.File
+
 /**
  * Сортировка времён
  *
@@ -96,8 +98,27 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 99.5
  * 121.3
  */
+//O(n), S(n)
 fun sortTemperatures(inputName: String, outputName: String) {
-    TODO()
+    val list = Array<Int>(7731) { 0 }
+    var sum = 0
+    for (line in File(inputName).readLines()) {
+        val element = (line.toDouble() * 10).toInt()
+        list[element + 2730] = list[element + 2730] + 1
+        sum++
+    }
+    File(outputName).bufferedWriter().use {
+        var count = -2730
+        for (element in list) {
+            if (element >= 1)
+                for (i in 1..element) { // O(n) в худшем и O(1)в лучшем трудоёмкость
+                    it.write((count.toDouble() / 10).toString())
+                    sum--
+                    if (sum != 0) it.newLine()
+                }
+            count++
+        }
+    }
 }
 
 /**
@@ -129,8 +150,43 @@ fun sortTemperatures(inputName: String, outputName: String) {
  * 2
  * 2
  */
+//O(n), S(n)
 fun sortSequence(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    val file = File(inputName).readLines()
+    val map = hashMapOf<Int, Int>()
+    val maxInt: Int
+    var count = 0
+    val maxInts = mutableListOf<Int>()
+    for (line in file) {
+        val digit = line.toInt()
+        map[digit] = map.getOrPut(digit, { 0 }) + 1
+    }
+    for ((key, value) in map) {
+        if (value > count) {
+            count = value
+        }
+    }
+    for ((key, value) in map) {
+        if (count == value) {
+            maxInts.add(key)
+        }
+    }
+    maxInt = maxInts.min()!!
+    for (line in file) {
+        val digit = line.toInt()
+        if (digit != maxInt) {
+            outputStream.write(line)
+            outputStream.newLine()
+        }
+    }
+    while (count != 0) {
+        outputStream.write(maxInt.toString())
+        outputStream.newLine()
+        count--
+    }
+    outputStream.close()
+
 }
 
 /**

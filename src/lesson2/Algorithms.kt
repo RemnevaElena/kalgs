@@ -79,8 +79,13 @@ fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
  * Общий комментарий: решение из Википедии для этой задачи принимается,
  * но приветствуется попытка решить её самостоятельно.
  */
+//O(n), S(1)
 fun josephTask(menNumber: Int, choiceInterval: Int): Int {
-    TODO()
+    var result = 0
+    for (i in 1..menNumber) {
+        result = (result + choiceInterval) % i
+    }
+    return result + 1
 }
 
 /**
@@ -94,8 +99,32 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  * Если имеется несколько самых длинных общих подстрок одной длины,
  * вернуть ту из них, которая встречается раньше в строке first.
  */
+//O(nm), S(nm) где n, m - длины исходных строк
 fun longestCommonSubstring(first: String, second: String): String {
-    TODO()
+    val grid = Array(first.length) { IntArray(second.length) { 0 } }
+    for (j in grid[0].indices) {
+        if (first[0] == second[j]) {
+            grid[0][j] = 1
+        }
+    }
+
+    var maxF = 0
+    var maxValue = 0
+    for (i in 1 until grid.size) {
+        for (j in grid[0].indices) {
+            if (first[i] == second[j]) {
+                if (j > 0) {
+                    grid[i][j] = grid[i - 1][j - 1]
+                }
+                grid[i][j]++
+                if (grid[i][j] > maxValue) {
+                    maxF = i
+                    maxValue = grid[i][j]
+                }
+            }
+        }
+    }
+    return first.substring(maxF - (maxValue - 1)..maxF)
 }
 
 /**
@@ -108,6 +137,20 @@ fun longestCommonSubstring(first: String, second: String): String {
  * Справка: простым считается число, которое делится нацело только на 1 и на себя.
  * Единица простым числом не считается.
  */
+// O(n), S(n log log n)
 fun calcPrimesNumber(limit: Int): Int {
-    TODO()
+    if (limit <= 1) return 0
+    val s = Array(limit + 1) { 1 } // O(n) - ресурсоёмксоть
+    s[1] = 0
+    var i = 2
+    while (i * i <= limit) { // O(n) - трудоёмкость
+        if (s[i] == 1)
+            for (k in i * i..limit step i) // O(~log log n) - трудоёмкость
+                s[k] = 0
+        i++
+    }
+    var count = 0
+    for (i in 2..limit)
+        if (s[i] == 1) count++
+    return count
 }

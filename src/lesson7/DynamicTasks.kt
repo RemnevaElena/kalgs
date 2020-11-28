@@ -2,6 +2,11 @@
 
 package lesson7
 
+import java.io.BufferedReader
+import java.io.FileReader
+import java.util.*
+
+
 /**
  * Наибольшая общая подпоследовательность.
  * Средняя
@@ -14,8 +19,49 @@ package lesson7
  * Если есть несколько самых длинных общих подпоследовательностей, вернуть любую из них.
  * При сравнении подстрок, регистр символов *имеет* значение.
  */
+// О(nm), S(nm) где n, m - длины исходных строк
 fun longestCommonSubSequence(first: String, second: String): String {
-    TODO()
+    val firstChar = first.toCharArray()
+    val secondChar = second.toCharArray()
+    val firstLen = firstChar.size
+    val secondLen = secondChar.size
+    val matrix = Array(firstLen + 1) { IntArray(secondLen + 1) }
+
+    for (i in 0..firstLen) {
+        matrix[i][0] = 0
+    }
+    for (i in 0..secondLen) {
+        matrix[0][i] = 0
+    }
+
+    for (i in 1..firstLen) {
+        for (j in 1..secondLen) {
+            if (firstChar[i - 1] == secondChar[j - 1]) {
+                matrix[i][j] = matrix[i - 1][j - 1] + 1
+            } else {
+                matrix[i][j] = Math.max(matrix[i - 1][j], matrix[i][j - 1])
+            }
+        }
+    }
+
+    var i = firstLen
+    var j = secondLen
+    val result = StringBuilder()
+
+    while (i > 0 && j > 0) {
+        if (firstChar[i - 1] == secondChar[j - 1]) {
+            result.append(firstChar[i - 1])
+            i--
+            j--
+        } else {
+            if (matrix[i][j - 1] > matrix[i - 1][j]) {
+                j--
+            } else {
+                i--
+            }
+        }
+    }
+    return result.reverse().toString()
 }
 
 /**
@@ -31,7 +77,40 @@ fun longestCommonSubSequence(first: String, second: String): String {
  * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
  */
 fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
-    TODO()
+    val result: MutableList<Int> = mutableListOf()
+    if (list.isEmpty()) return result
+    val size = list.size
+    val arrayLength: Array<Int?> = Array(size) { -1 }
+    val arrayPath: Array<Int?> = Array(size) { -1 }
+    var max: Int?
+    var jMax: Int?
+    for (i in 0 until size) {
+        max = 0
+        jMax = 0
+        for (j in 0 until i) {
+            if (list[j] < list[i] && arrayLength[j]!! > max!!) {
+                max = arrayLength[j]
+                jMax = j
+            }
+        }
+        arrayLength[i] = max!! + 1
+        arrayPath[i] = jMax
+    }
+    var n = 0
+    for (k in 0 until size) {
+        if (arrayLength[k]!! > arrayLength[n]!!) n = k
+    }
+    while (true) {
+        if (n == 0) {
+            result.add(list[n])
+            break
+        }
+        result.add(list[n])
+        n = arrayPath[n]!!
+    }
+
+    result.reverse()
+    return result
 }
 
 /**

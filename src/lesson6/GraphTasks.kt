@@ -33,40 +33,9 @@ import kotlin.collections.HashSet
  * Справка: Эйлеров цикл -- это цикл, проходящий через все рёбра
  * связного графа ровно по одному разу
  */
-//S = O(n) T = O(n) где n - количество вершин в графе
-fun Graph.findEulerLoop(): List<Graph.Edge> {
-    val result = mutableListOf<Graph.Edge>()
-    var n = 0
-    for (v in this.vertices) {
-        n += this.getNeighbors(v).size % 2
-    }
-    if (n != 0) return result
-    val stack: Stack<Pair<Graph.Vertex, Graph.Edge>> = Stack()
-    stack.push(Pair(this.edges.first().begin, this.edges.first()))
-    val passed = mutableSetOf(stack.peek().second)
-    while (!stack.empty()) {
-        var neighbor = 0
-        var nextEdge = stack.peek().second
-        var nextVertex = stack.peek().first
-        when (stack.peek().first) {
-            stack.peek().second.begin -> nextVertex = stack.peek().second.end
-            stack.peek().second.end -> nextVertex = stack.peek().second.begin
-        }
-        for (t in getConnections(nextVertex).values) {
-            if (!passed.contains(t)) {
-                neighbor++
-                nextEdge = t
-            }
-        }
-        if (neighbor == 0) {
-            result += stack.pop().second
-        } else {
-            stack.push(Pair(nextVertex, nextEdge))
-            passed += nextEdge
-        }
-    }
-    return result
 
+fun Graph.findEulerLoop(): Graph {
+    TODO()
 }
 
 /**
@@ -99,6 +68,39 @@ fun Graph.findEulerLoop(): List<Graph.Edge> {
  */
 //S = O(n) T = O(n) где n - количество вершин в графе
 fun Graph.minimumSpanningTree(): Graph {
+//    val result = mutableListOf<Graph.Edge>()
+//    var n = 0
+//    for (v in this.vertices) {
+//        n += this.getNeighbors(v).size % 2
+//    }
+//    if (n != 0) return result
+//    val stack: Stack<Pair<Graph.Vertex, Graph.Edge>> = Stack()
+//    stack.push(Pair(this.edges.first().begin, this.edges.first()))
+//    val passed = mutableSetOf(stack.peek().second)
+//    while (!stack.empty()) {
+//        var neighbor = 0
+//        var nextEdge = stack.peek().second
+//        var nextVertex = stack.peek().first
+//        when (stack.peek().first) {
+//            stack.peek().second.begin -> nextVertex = stack.peek().second.end
+//            stack.peek().second.end -> nextVertex = stack.peek().second.begin
+//        }
+//        for (t in getConnections(nextVertex).values) {
+//            if (!passed.contains(t)) {
+//                neighbor++
+//                nextEdge = t
+//            }
+//        }
+//        if (neighbor == 0) {
+//            result += stack.pop().second
+//        } else {
+//            stack.push(Pair(nextVertex, nextEdge))
+//            passed += nextEdge
+//        }
+//    }
+//    return result
+
+
     val result: MutableList<Graph.Vertex> = ArrayList()
     val vertices: MutableSet<Graph.Vertex> = this.vertices
     var neighbors: MutableSet<Graph.Vertex> = HashSet()
@@ -162,7 +164,31 @@ fun Graph.minimumSpanningTree(): Graph {
  * Эта задача может быть зачтена за пятый и шестой урок одновременно
  */
 fun Graph.largestIndependentVertexSet(): Set<Graph.Vertex> {
-    TODO()
+    var graph = this
+    if (graph.vertices.isEmpty()) {
+        return emptySet()
+    }
+    if (graph.edges.isEmpty()) return graph.vertices
+    val result = HashSet<Graph.Vertex>()
+    val invResult = HashSet<Graph.Vertex>()
+    val edges = graph.edges
+    var first: Graph.Edge? = null
+    for (edge in edges) {
+        val eBegin = edge.begin
+        val eEnd = edge.end
+
+        if (result.isEmpty() || eBegin === first!!.begin) first = edge
+        if (!result.contains(first!!.end)) {
+            result.add(first.end)
+            invResult.add(first.begin)
+        }
+        if (result.contains(eBegin)) invResult.add(eEnd)
+        if (invResult.contains(eBegin)) result.add(eEnd)
+    }
+    return if (result.size > invResult.size)
+        result
+    else
+        invResult
 }
 
 /**

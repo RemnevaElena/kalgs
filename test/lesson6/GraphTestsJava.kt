@@ -7,7 +7,7 @@ class GraphTestsJava : AbstractGraphTests() {
     @Test
     @Tag("6")
     fun testFindEulerLoopJava() {
-        findEulerLoop { let { JavaGraphTasks.findEulerLoop(it) } }
+        findEulerLoop(findEulerLoop(findEulerLoop()))
     }
 
     @Test

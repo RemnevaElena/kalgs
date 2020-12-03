@@ -13,6 +13,7 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
     private val storage = Array<Any?>(capacity) { null }
 
     override var size: Int = 0
+    private object removed
 
     /**
      * Индекс в таблице, начиная с которого следует искать данный элемент
@@ -76,7 +77,21 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
      * Средняя
      */
     override fun remove(element: T): Boolean {
-        TODO("not implemented")
+        val startingIndex = element.startingIndex()
+        var index = startingIndex
+        var current = storage[index]
+
+        while (current != null) {
+            if (current == element) {
+                storage[index] = removed
+                size--
+                return true
+            }
+            index = (index + 1) % capacity
+            check(index != startingIndex)
+            current = storage[index]
+        }
+        return false
     }
 
     /**

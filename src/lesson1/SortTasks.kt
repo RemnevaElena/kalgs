@@ -155,7 +155,7 @@ fun sortSequence(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     val file = File(inputName).readLines()
     val map = hashMapOf<Int, Int>()
-    val maxInt: Int
+
     var count = 0
     val maxInts = mutableListOf<Int>()
     for (line in file) {
@@ -172,6 +172,7 @@ fun sortSequence(inputName: String, outputName: String) {
             maxInts.add(key)
         }
     }
+    val maxInt: Int
     maxInt = maxInts.min()!!
     for (line in file) {
         val digit = line.toInt()

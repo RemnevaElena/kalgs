@@ -1,5 +1,6 @@
 package lesson7
 
+import kotlin.random.Random
 import kotlin.test.assertEquals
 
 abstract class AbstractDynamicTests {

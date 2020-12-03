@@ -88,9 +88,11 @@ fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
         max = 0
         jMax = 0
         for (j in 0 until i) {
-            if (list[j] < list[i] && arrayLength[j]!! > max!!) {
-                max = arrayLength[j]
-                jMax = j
+            if (list[j] < list[i] && arrayLength[j] != null && max != null) {
+                if(arrayLength[j]!! > max) {
+                    max = arrayLength[j]
+                    jMax = j
+                }
             }
         }
         arrayLength[i] = max!! + 1

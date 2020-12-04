@@ -111,7 +111,7 @@ fun sortTemperatures(inputName: String, outputName: String) {
         var count = -2730
         for (element in list) {
             if (element >= 1)
-                for (i in 1..element) {
+                for (i in 1..element) { // O(n) в худшем и O(1)в лучшем трудоёмкость
                     it.write((count.toDouble() / 10).toString())
                     sum--
                     if (sum != 0) it.newLine()
@@ -155,6 +155,7 @@ fun sortSequence(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     val file = File(inputName).readLines()
     val map = hashMapOf<Int, Int>()
+
     var count = 0
     val maxInts = mutableListOf<Int>()
     for (line in file) {
@@ -191,7 +192,7 @@ fun sortSequence(inputName: String, outputName: String) {
 
 /**
  * Соединить два отсортированных массива в один
- *.
+ *
  * Простая
  *
  * Задан отсортированный массив first и второй массив second,
@@ -206,4 +207,3 @@ fun sortSequence(inputName: String, outputName: String) {
 fun <T : Comparable<T>> mergeArrays(first: Array<T>, second: Array<T?>) {
     TODO()
 }
-

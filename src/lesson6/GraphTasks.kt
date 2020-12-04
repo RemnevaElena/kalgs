@@ -35,37 +35,38 @@ import kotlin.collections.HashSet
  */
 //S = O(n) T = O(n) где n - количество вершин в графе
 fun Graph.findEulerLoop(): List<Graph.Edge> {
-    val result = mutableListOf<Graph.Edge>()
-    var n = 0
-    for (v in this.vertices) {
-        n += this.getNeighbors(v).size % 2
-    }
-    //if (n != 0) return result
-    val stack: Stack<Pair<Graph.Vertex, Graph.Edge>> = Stack()
-    stack.push(Pair(this.edges.first().begin, this.edges.first()))
-    val passed = mutableSetOf(stack.peek().second)
-    while (!stack.empty()) {
-        var neighbor = 0
-        var nextEdge = stack.peek().second
-        var nextVertex = stack.peek().first
-        when (stack.peek().first) {
-            stack.peek().second.begin -> nextVertex = stack.peek().second.end
-            stack.peek().second.end -> nextVertex = stack.peek().second.begin
-        }
-        for (t in getConnections(nextVertex).values) {
-            if (!passed.contains(t)) {
-                neighbor++
-                nextEdge = t
-            }
-        }
-        if (neighbor == 0) {
-            result += stack.pop().second
-        } else {
-            stack.push(Pair(nextVertex, nextEdge))
-            passed += nextEdge
-        }
-    }
-    return result
+    TODO()
+//    val result = mutableListOf<Graph.Edge>()
+//    var n = 0
+//    for (v in this.vertices) {
+//        n += this.getNeighbors(v).size % 2
+//    }
+//    //if (n != 0) return result
+//    val stack: Stack<Pair<Graph.Vertex, Graph.Edge>> = Stack()
+//    stack.push(Pair(this.edges.first().begin, this.edges.first()))
+//    val passed = mutableSetOf(stack.peek().second)
+//    while (!stack.empty()) {
+//        var neighbor = 0
+//        var nextEdge = stack.peek().second
+//        var nextVertex = stack.peek().first
+//        when (stack.peek().first) {
+//            stack.peek().second.begin -> nextVertex = stack.peek().second.end
+//            stack.peek().second.end -> nextVertex = stack.peek().second.begin
+//        }
+//        for (t in getConnections(nextVertex).values) {
+//            if (!passed.contains(t)) {
+//                neighbor++
+//                nextEdge = t
+//            }
+//        }
+//        if (neighbor == 0) {
+//            result += stack.pop().second
+//        } else {
+//            stack.push(Pair(nextVertex, nextEdge))
+//            passed += nextEdge
+//        }
+//    }
+//    return result
 
 }
 

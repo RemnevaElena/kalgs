@@ -191,7 +191,7 @@ fun sortSequence(inputName: String, outputName: String) {
 
 /**
  * Соединить два отсортированных массива в один
- *
+ *.
  * Простая
  *
  * Задан отсортированный массив first и второй массив second,

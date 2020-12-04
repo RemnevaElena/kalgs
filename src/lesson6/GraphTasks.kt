@@ -191,7 +191,7 @@ fun Graph.largestIndependentVertexSet(): Set<Graph.Vertex> {
  * E    F -- I    |
  * |              |
  * J ------------ K
- *
+ *.
  * Ответ: A, E, J, K, D, C, H, G, B, F, I
  */
 fun Graph.longestSimplePath(): Path {

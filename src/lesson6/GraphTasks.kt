@@ -40,7 +40,7 @@ fun Graph.findEulerLoop(): List<Graph.Edge> {
     for (v in this.vertices) {
         n += this.getNeighbors(v).size % 2
     }
-    if (n != 0) return result
+    //if (n != 0) return result
     val stack: Stack<Pair<Graph.Vertex, Graph.Edge>> = Stack()
     stack.push(Pair(this.edges.first().begin, this.edges.first()))
     val passed = mutableSetOf(stack.peek().second)
@@ -97,42 +97,28 @@ fun Graph.findEulerLoop(): List<Graph.Edge> {
  * |
  * J ------------ K
  */
-//S = O(n) T = O(n) где n - количество вершин в графе
+//O(n*m) S = O(n) m - количество ребер, n - количество вершин
 fun Graph.minimumSpanningTree(): Graph {
-    val result: MutableList<Graph.Vertex> = ArrayList()
-    val vertices: MutableSet<Graph.Vertex> = this.vertices
-    var neighbors: MutableSet<Graph.Vertex> = HashSet()
-    val graphR = GraphBuilder()
-    var current: Graph.Vertex
-    current = vertices.iterator().next()
-    result.add(current)
-    for (i in 0 until vertices.size - 1) {
-        neighbors.addAll(this.getNeighbors(current))
-        val iterator: Iterator<Graph.Vertex> = neighbors.iterator()
-        while (iterator.hasNext() && result.contains(current)) {
-            current = iterator.next()
-        }
-        if (result.size > 2 && current == result[result.size - 2]) break
-        graphR.addVertex(current.toString())
-        if (!result.isEmpty()) graphR.addConnection(result[result.size - 1], current, 1)
-        result.add(current)
-        neighbors.clear()
+    val res = GraphBuilder()
+    val ids = mutableMapOf<Graph.Vertex, Int>()
+    for ((count, v) in vertices.withIndex()) {
+        ids[res.addVertex(v.name)] = count
     }
-    neighbors.clear()
-    vertices.removeAll(result)
-    for (vertex in vertices) {
-        neighbors = this.getNeighbors(vertex)
-        for (v in neighbors) {
-
-            if (result.contains(v)) {
-                result.add(vertex)
-                graphR.addVertex(vertex.toString())
-                graphR.addConnection(v, vertex, 1)
-                break
+    for (edge in edges) {
+        val a = edge.begin
+        val b = edge.end
+        if (ids[a] != ids[b]) {
+            res.addConnection(a, b)
+            val oldId = ids[a]
+            val newId = ids[b]
+            for (v_id in ids) {
+                if (v_id.value == oldId) {
+                    v_id.setValue(newId!!)
+                }
             }
         }
     }
-    return graphR.build()
+    return res.build()
 }
 
 /**
@@ -161,8 +147,31 @@ fun Graph.minimumSpanningTree(): Graph {
  *
  * Эта задача может быть зачтена за пятый и шестой урок одновременно
  */
+//O(n^2) S(n)
 fun Graph.largestIndependentVertexSet(): Set<Graph.Vertex> {
-    TODO()
+    val allResults = mutableListOf<Set<Graph.Vertex>>()
+    val candidates = mutableSetOf<Graph.Vertex>()
+    val exists = mutableSetOf<Graph.Vertex>()
+
+    for (vertex in this.vertices) {
+        this.vertices
+            .stream()
+            .filter { anotherVertex ->
+                !this.getNeighbors(vertex).contains(anotherVertex) && !exists.contains(anotherVertex)
+            }
+            .forEachOrdered { anotherVertex ->
+                exists.addAll(this.getNeighbors(anotherVertex))
+                candidates.add(anotherVertex)
+            }
+        allResults.add(candidates)
+    }
+    var result = setOf<Graph.Vertex>()
+    for (allResult in allResults) {
+        if (result.size < allResult.size) {
+            result = allResult
+        }
+    }
+    return result
 }
 
 /**

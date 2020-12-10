@@ -79,17 +79,97 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
      *
      * Средняя
      */
+    //O(n), S(h), где h - высота дерева
     override fun remove(element: T): Boolean {
-        TODO()
+        var parent = root
+        var current = root
+        var isLeft = true
+
+        while (current != null) {
+            val comparison = element.compareTo(current.value)
+            if (comparison == 0) {
+                break
+            }
+            parent = current
+            when {
+                comparison < 0 -> {
+                    current = current.left
+                    isLeft = true
+                }
+                else -> {
+                    current = current.right
+                    isLeft = false
+                }
+            }
+        }
+
+        if (current == null) {
+            return false
+        }
+        if (current.left == null && current.right == null) {
+            when {
+                current == root -> root = null
+                isLeft -> parent?.left = null
+                else -> parent?.right = null
+            }
+        } else if (current.right == null) {
+            when {
+                current == root -> root = current.left
+                isLeft -> parent?.left = current.left
+                else -> parent?.right = current.left
+            }
+        } else if (current.left == null) {
+            when {
+                current == root -> root = current.right
+                isLeft -> parent?.left = current.right
+                else -> parent?.right = current.right
+            }
+        } else {
+            val successor = getSuccessor(current)
+            when {
+                current == root -> root = successor
+                isLeft -> parent?.left = successor
+                else -> parent?.right = successor
+            }
+            successor.left = current.left
+        }
+        size--
+        return true
     }
+
+    // поиск преемника
+    private fun getSuccessor(node: Node<T>): Node<T> {
+        var successorParent = node
+        var successor = node
+        var current = node.right
+        while (current != null) {
+            successorParent = successor
+            successor = current
+            current = current.left
+        }
+        if (successor != node.right) {
+            successorParent.left = successor.right
+            successor.right = node.right
+        }
+        return successor
+    }
+
 
     override fun comparator(): Comparator<in T>? =
         null
 
     override fun iterator(): MutableIterator<T> =
         BinarySearchTreeIterator()
-
+    //S(h)
     inner class BinarySearchTreeIterator internal constructor() : MutableIterator<T> {
+        private val stack = Stack<Node<T>>()
+        init {
+            var node = root
+            while (node != null) {
+                stack.push(node)
+                node = node.left
+            }
+        }
 
         /**
          * Проверка наличия следующего элемента
@@ -101,10 +181,9 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          *
          * Средняя
          */
-        override fun hasNext(): Boolean {
-            // TODO
-            throw NotImplementedError()
-        }
+
+        override fun hasNext(): Boolean = stack.isNotEmpty()
+
 
         /**
          * Получение следующего элемента

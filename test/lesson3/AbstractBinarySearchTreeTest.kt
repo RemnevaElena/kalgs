@@ -161,7 +161,14 @@ abstract class AbstractBinarySearchTreeTest {
                 )
             }
             println("All clear!")
+            val kttree: KtBinarySearchTree<Int> = KtBinarySearchTree()
+            kttree.addAll(listOf(1, 10, 4, 7, 16, 18, 20, 354, 77))
+            kttree.remove(1)
+            kttree.remove(354)
+            assertTrue(kttree.size == 7)
+            assertFalse(kttree.contains(354) || kttree.contains(1))
         }
+
     }
 
     protected fun doIteratorTest() {

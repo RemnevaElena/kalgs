@@ -104,7 +104,7 @@ abstract class AbstractTrieTest {
                 controlSet.isEmpty(),
                 "TrieIterator doesn't traverse the entire set."
             )
-            assertFailsWith<IllegalStateException>("Something was supposedly returned after the elements ended") {
+            assertFailsWith<NoSuchElementException>("Something was supposedly returned after the elements ended") {
                 trieIter.next()
             }
             println("All clear!")
@@ -167,6 +167,12 @@ abstract class AbstractTrieTest {
                     controlSet.contains(element),
                     "Trie set has the element $element that is not in control set."
                 )
+            }
+            assertFailsWith<ConcurrentModificationException> {
+                for (element in trieSet) {
+                    trieSet.remove(trieSet.first())
+                }
+
             }
             println("All clear!")
         }

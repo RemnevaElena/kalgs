@@ -123,7 +123,7 @@ abstract class AbstractAlgorithmsTests {
             ).trim()
         )
 
-        assertEquals("А себя, как я, вывернуть не можете", longestCommonSubstring("""Вашу мысль,
+        assertEquals("\nА себя, как я, вывернуть не можете", longestCommonSubstring("""Вашу мысль,
 мечтающую на размягченном мозгу,
 как выжиревший лакей на засаленной кушетке.
 буду дразнить об окровавленный сердца лоскут,

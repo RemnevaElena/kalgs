@@ -40,6 +40,10 @@ abstract class AbstractOpenAddressingSetTest {
     }
 
     protected fun doRemoveTest() {
+        val testSet = mutableSetOf<String>()
+        val removeString = "u26Dm54ou4"
+        assertFalse(testSet.remove(removeString))
+
         val random = Random()
         for (iteration in 1..100) {
             val bitsNumber = random.nextInt(4) + 6

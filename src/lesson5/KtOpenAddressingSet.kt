@@ -4,6 +4,8 @@ package lesson5
  * Множество(таблица) с открытой адресацией на 2^bits элементов без возможности роста.
  */
 class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T>() {
+    private object REMOVED
+
     init {
         require(bits in 2..31)
     }
@@ -51,7 +53,7 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
         val startingIndex = element.startingIndex()
         var index = startingIndex
         var current = storage[index]
-        while (current != null) {
+        while (current != null && current != REMOVED) {
             if (current == element) {
                 return false
             }
@@ -67,7 +69,7 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
     /**
      * Удаление элемента из таблицы
      *
-     * Если элемент есть в таблице, функция удаляет его из дерева и возвращает true.
+     * Если элемент есть в таблица, функция удаляет его из дерева и возвращает true.
      * В ином случае функция оставляет множество нетронутым и возвращает false.
      * Высота дерева не должна увеличиться в результате удаления.
      *
@@ -75,9 +77,26 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
      *
      * Средняя
      */
+
+    //O(const),S(const)
+
     override fun remove(element: T): Boolean {
-        TODO("not implemented")
+        val startingIndex = element.startingIndex()
+        var index = startingIndex
+        var current = storage[index]
+        while (current != null) {
+            if (current == element) {
+                storage[index] = REMOVED
+                size--
+                return true
+            }
+            index = (index + 1) % capacity
+            if (startingIndex == index) continue
+            current = storage[index]
+        }
+        return false
     }
+
 
     /**
      * Создание итератора для обхода таблицы
